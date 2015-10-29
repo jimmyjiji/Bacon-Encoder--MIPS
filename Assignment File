@@ -1,0 +1,260 @@
+In this assignment you will be creating a collection of functions used to implement a variation of
+the bacon cipher and the null cipher. The two ciphers are a form of steganography and will give you
+good practice manipulating strings in assembly language. You must implement allthe functions in
+the assignment as defined. You will be given a main file to test your functions. You cannot change
+or add anything in main.asm . It is OK to define other helper functions that are localto your own
+code in hw2.asm .
+Do NOT change the main file! We will build your program with our own main files, therefore any
+changes made in your main file will not be there when we test.
+You must follow the MIPS calling and register conventions. If you do not you WILL lose
+points.
+Do not submit a file with the functions/labels main or _start defined. You will obtain a ZERO for
+the assignment if you do this.
+Getting started
+Download hw2.zip from piazza in the homework section of resources.
+This file contains hw2.asm and main.asm which you need for the assignment.
+At the top of your program in comments put your name and id.
+# Homework #2
+# name: MY_NAME
+# sbuid: MY_SBU_ID
+How to test your functions
+To test your functions simply open the provided hw2.asm and main.asm in MARS. Next just
+assemble main.asm and run the file. Mars willtake the contents of the file referenced with the
+.include at the end of the file and add the contents of your file to the main file before
+assembling it. Once the contents have been substituted into the file, Mars willthen assemble it as
+normal.
+Part 1: Null Cipher
+The null cipher is a basic form of cryptography where the message is hidden in plain sight in a
+seemingly normal message. For this assignment you will create a modified version of the null
+cipher with the following rules:
+You will be given a sequence of integers which indicates which letters in the string are used to
+form the message.
+Example: 1, 5, 0, 5, 2, 1, 4, 0, 0, 1, 4, 3, 1, -1
+You can assume that this sequence will always be valid.
+This sequence will always be less than or equalthe length of the string, never greater than.
+If the string is longer than the given pattern you just ignore the rest of the words.
+If you encounter a 0 in the sequence that means skip the current word in the message text.
+When you reach -1 in the list of numbers that means you have reached the end of the
+sequence.
+This numerical sequence will be passed to your function from the main program as an
+integer array.
+The decoded message that is returned must be in all caps.
+Example: You extract eNCodE from the message but you will print ENCODE .
+Assume you have the ciphertext: Whenever students program lovely code very late at
+night, my brain explodes! *sigh sigh sigh* and you were given the integer sequence:
+(1, 5, 0, 5, 2, 1, 4, 0, 0, 1, 4, 3, 1, -1). If you were to match up the first word with the first number, and
+the second word with the second number, etc. You might find the following secret message:
+Whenever students program lovely code very late at night, my brain explodes! *sigh sigh sigh*
+This message translates to WELOVEMIPS .
+Ignore punctuation, spaces, and numbers.
+Create the following functions in MIPS which has the following names and parameters:
+/**
+* Converts a lowercase letter to uppercase.
+* @param c Character to convert to uppercase.
+* @return Returns the uppercase value of a lowercase letter. If the
+* character provided is not a lowercase letter then just return the
+* input character.
+*/
+public char toUpper(char c);
+/**
+* Decodes a message encrypted using the null cipher.
+* @param text Starting address of message encoded using the null
+* cipher.
+* @param output Starting address of memory to store the output
+* message.
+* @param outputLen Length of the output buffer.
+* @param pattern Pattern used to decode the message.
+*/
+public abstract void decodeNull(char[] text, char []output, int
+outputLen, int[] pattern);
+The decodeNull function must callthe toUpper function and capitalize the decoded
+message.
+You can assume that the output buffer will always be large enough to store the
+message + the null character.
+You can assume there are no errors in the integer sequence, meaning the pattern value
+will always be less than than or equalto the number of characters in the word of the text.
+Part 2: Bacon Cipher
+In this part you are going to implement encoding and decoding using the bacon cipher using an
+alternate form of the baconian alphabet. For this assignment, we will use the following mapping
+for each alphabet letter and the specified symbols. Use the ASCII Table for reference.
+Pattern Letter Pattern Letter Pattern Letter
+AAAAA A ABBAB N BBABA space
+AAAAB B ABBBA O BBABB !
+AAABA C ABBBB P BBBAA ‘
+AAABB D BAAAA Q BBBAB ,
+AABAA E BAAAB R BBBBA .
+AABAB F BAABA S BBBBB EOM
+AABBA G BAABB T
+AABBB H BABAA U
+ABAAA I BABAB V
+ABAAB J BABBA W
+ABABA K BABBB X
+ABABB L BBAAA Y
+ABBAA M BBAAB Z
+Pattern Letter Pattern Letter Pattern Letter
+NOTE: The ‘A’ and ‘B’ characters are placeholders and can be represented by any two
+unique characters.
+Encoding BBBBB represents the end of the message (EOM).
+Example of encoding
+If we want to encode the secret message We Love MIPS into the text below, we perform the
+following steps.
+Text: whenever students program lovely code very late at night, my brain explodes! *sigh sigh
+sigh*
+1. Convert the secret message into its Baconian Sequence.
+We Love MIPS becomes the sequence
+BABBAAABAABBABAABABBABBBABABABAABAABBABAABBAAABAAAABBBBBAABABBBBB
+2. Match up each character of the Baconian Sequence with an alphabet character of the text.
+whenever students program lovely code very late at night, my brain
+BABBAAAB AABBABAA BABBABB BABABA BAAB AABB ABAA BB AAABA AA ABBBB
+explodes! *sigh sigh sigh*
+BAABABBB BB
+3. For each character of the text that matches to the letter B, the letter of the text is
+converted to a capital letter.
+WhENeveR stUDeNts PrOGrAM LoVeLy CodE veRY lAte AT nigHt, my bRAIN
+BABBAAAB AABBABAA BABBABB BABABA BAAB AABB ABAA BB AAABA AA ABBBB
+ExpLoDES! *SIgh sigh sigh*
+BAABABBB BB
+When the Baconian Sequence is completed the remaining letters of the text are left unchanged.
+The text with the secret message encoded is:
+WhENeveR stUDeNts PrOGrAM LoVeLy CodE veRY lAte AT nigHt, my bRAIN
+ExpLoDES! *SIgh sigh sigh*
+Example of decoding
+To decode the message for the text, you reverse this process.
+WhENeveR stUDeNts PrOGrAM LoVeLy CodE veRY lAte AT nigHt, my bRAIN
+ExpLoDES! *SIgh sigh sigh*
+1. For each capital letter in the text you replace it with a B . All lowercase letters are replaced
+with an A .
+WhENeveR stUDeNts PrOGrAM LoVeLy CodE veRY lAte AT nigHt, my bRAIN
+BABBAAAB AABBABAA BABBABB BABABA BAAB AABB ABAA BB AAABA AA ABBBB
+ExpLoDES! *SIgh sigh sigh*
+BAABABBB BBAA AAAA AAAA
+2. From the start of the baconian sequence, process the symbols in groups of 5, and replace
+each pattern with the cooresponding letter. Stop when you find the end of message (EOM)
+sequence.
+BABBA AABAA BBABA ABABB ABBBA BABAB AABAA BBABA ABBAA ABAAA ABBBB
+BAABA BBBBB AAAAA AAAAA
+becomes
+BABBA AABAA BBABA ABABB ABBBA BABAB AABAA BBABA ABBAA ABAAA ABBBB
+W E space L O V E space M I P
+BAABA BBBBB AAAAA AAAAA
+S EOM
+The secret message has been revealed.
+To implement encryption and decryption using the bacon cipher, create the following functions.
+String functions
+You will need to create a few simple string functions to assist with encoding and decoding the
+messages.
+/**
+* Counts the number of alphabet chars contained within a string.
+* @param text String containing the message to count chars in.
+* @return Returns the number of alphabet chars in the sentence.
+*/
+public abstract int countChars(char[] text);
+Examples:
+text: Computer Science is fun.
+return: 20
+text: I’ll be back!!!!!!!!!
+return: 9
+/**
+* Converts all letters to lowercase.
+* @param string String containing the message to make lowercase.
+* @return Returns the address of the string passed in.
+*/
+public abstract String toLower(char[] string);
+Examples:
+string: Computer Science is fun.
+resultant string: computer science is fun.
+string: I’ll be back!!!!!!!!!
+resultant string: i’ll be back!!!!!!!!!
+Generating Baconian Sequence
+The first step to encoding a secret message is to replace each character of the message with the
+5-bit baconian mapping. Implement a genBacon function which will generate the string of A and
+B symbols for the plaintext string. When you reach the end of the secret message (denoted by the
+end of the string), add the EOM baconian mapping to the string.
+Upper and lowercase alphabet characters map to the same baconian encoding.
+Any ascii characters not in the mapping table should be ignored.
+/**
+* Encodes the plaintext string using the Baconian cipher.
+* @param plaintext Starting address of '\0' terminated string to be
+* encoded.
+* @param output Starting address of memory to store the output
+* message.
+* @param sym1 Alphabet symbol to represent A in the bacon encoding
+* @param sym2 Alphabet symbol to represent B in the bacon encoding.
+* @return Returns the starting address of bacon encoded string
+* and the length in characters.
+*/
+public abstract (String, int) genBacon(char[] plaintext, char[]
+output, char sym1, char sym2);
+The return type (String, int) is a “made-up” return type specifying that the function
+returns two values, a string and an integer. Remember that in MIPS you have two registers
+which are designated to store return values from a function.
+sym1 and sym2 must be an alphabetical character, a-z or A-Z. No symbols.
+The genBacon function MUST callthe countChars function.
+Examples:
+plaintext: Cse220!
+sym1: V
+sym2: p
+resultant string: VVVpVpVVpVVVpVVppVppppppp
+resultant length: 25
+plaintext: FALL is here.
+sym1: z
+sym2: P
+resultant string:
+zzPzPzzzzzzPzPPzPzPPPPzPzzPzzzPzzPzPPzPzzzPPPzzPzzPzzzPzzPzzPPPPzPPPPP
+resultant length: 70
+Encode Baconian
+The bacon encoding of the secret message can now be used to hide information in text.
+Create the function hideEncoding to map the bacon encoding to the characters of the text.
+Capitalize the characters which map to the specified character sym in the bacon encoding. The
+length of the encoding is required to know how much information must be embedded into the
+text.
+/**
+*
+* @param baconEncoding A baconian encoding sequence.
+* @param text The message to hide the encoded message in.
+* @param sym The symbol to make uppercase.
+* @param length The length of the encoding.
+* @return Returns the length of the message that was encoded and
+* if the the entire message was encoded (1) or not (0).
+*/
+public abstract (int, boolean) hideEncoding(char[] baconEncoding,
+char[] text, char sym, int length);
+The hideEncoding function MUST callthe toLower and toUpper functions.
+The return type (int, boolean) is a made up return type specifying that the function
+returns two values, an integer and boolean. Remember that in MIPS you have two registers
+which are designated to store return values from a function.
+Decode Baconian
+This function will perform the extraction of the baconian encoding sequence from the text.
+/**
+*
+* @param baconEncoding The baconian sequence extracted from
+* the text.
+* @param text The message the encoded message is hidden in.
+* @param sym The symbol to denote uppercase.
+* @param length The length of the baconian sequence.
+* @return Returns the length of the baconEncoding sequence that
+* was extracted from the text and a boolean denoting if the
+* sequence extracted is complete (ie. a length which is a
+* multiple of 5 and/or has EOM), Complete sequence (1) or not (0).
+*/
+public abstract (int, boolean) findEncoding(char[] baconEncoding,
+char[] text, char sym, int length);
+The findEncoding function MUST callthe countChars function.
+This function will decode the baconian encoding sequence into the secret message.
+/**
+* Decodes a Baconian encoded string into the secret message.
+* @param baconEncoding Starting address of string which contains a
+* baconian sequence.
+* @param sym1 Symbol to denote 'B'.
+* @param text Buffer to store the decoded message in.
+* @param length Length of the text buffer.
+* @return Returns the length of the decoded message, including
+* the string '\0' and a boolean flag denoting if the EOM marker
+* was decoded and terminated the secret message (1) or not (0).
+*/
+public abstract (int, boolean) decodeBacon(char[] baconEncoding, char
+sym1, char[] text, int length);
+The decodeBacon function MUST callthe countChars function.
+Stop decoding at the length of the text buffer.
+Make sure to insert a ‘\0’ character at the end of the text in the buffer to terminate the
+string.
